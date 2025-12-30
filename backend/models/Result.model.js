@@ -13,7 +13,8 @@ const ResultSchema=new mongoose.Schema({
     },
     academicYear:{
         type: String,
-        required: true
+        required: true,
+        match: /^\d{4}\/\d{4}$/
     },
     scores:[
         {
