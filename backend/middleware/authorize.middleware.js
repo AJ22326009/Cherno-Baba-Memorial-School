@@ -11,6 +11,20 @@ const authorize= (role) => {
 
         next();
     }
+};
+
+const onlyParticularUser= (req, res, next) => {
+    const userId=req.params.id;
+
+    if(!req.user){
+        return res.status(401).json({ message: 'user not logged in' });
+    }
+
+    if (req.user.userId !== userId) {
+        return res.status(403).json({ message: 'forbidden access' });
+    }
+
+    next();
 }
 
-module.exports = authorize;
+module.exports={authorize, onlyParticularUser};
