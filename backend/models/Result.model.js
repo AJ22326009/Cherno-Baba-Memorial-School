@@ -39,4 +39,6 @@ const ResultSchema=new mongoose.Schema({
 }
 ,{timestamps:true});
 
+ResultSchema.index({ student: 1, term: 1, academicYear: 1 }, { unique: true });
+
 module.exports=mongoose.model('Result',ResultSchema);
