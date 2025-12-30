@@ -1,7 +1,17 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const cors = require('cors');
+
+// Import Routes
+
 const authRoutes = require('./routes/auth.routes');
+const studentRoutes = require('./routes/student.route');
+const resultRoutes = require('./routes/result.route');
+const userRoutes = require('./routes/user.route');
+const subjectRoutes = require('./routes/subject.route');
+
+const authenticate = require('./middleware/authenticate.middleware');
 
 const app = express();
 
@@ -9,11 +19,17 @@ const app = express();
 dotenv.config();
 connectDB();
 
+app.use(cors());
+
 //use json
 app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/students',authenticate, studentRoutes);
+app.use('/api/results', authenticate, resultRoutes);
+app.use('/api/users', authenticate, userRoutes);
+app.use('/api/subjects', authenticate, subjectRoutes);
 
 const PORT = process.env.PORT || 5000;
 
