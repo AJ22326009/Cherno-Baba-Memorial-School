@@ -11,14 +11,18 @@ const createResult=async(req,res)=>{
         if(!student){
             return res.status(400).json({message: "Student not found"});
         }
+
+        if(req.user.assignedClass !== student.classLevel){
+            return res.status(403).json({ message: 'You can only create results for students from your assigned class' });
+        }
+
         const existingResult=await Result.findOne({student:student._id, term, academicYear});
         if(existingResult){
-            return res.status(400).json({message: "Result for this student, term and academic year already exists"});
+            return res.status(400).json({message: "This result already exists"});
         }
 
         for(const score of scores){
             const subject=await Subject.findOne({name: score.subject});
-            console.log(subject);
             if(!subject){
                 return res.status(400).json({message: `Subject with ID ${score.subject} not found`});
             }
@@ -47,13 +51,18 @@ const generateClassPositions=async(req,res)=>{
         const results= await Result.find({term, academicYear}).populate({path: 'student', match: {classLevel}});
         const filteredResults=results.filter(result=> result.student !== null);
 
-        filteredResults.sort((a,b)=> b.total - a.total);
+        filteredResults.sort((a, b) => b.total - a.total);
 
-        let position=1;
-        for(const result of filteredResults){
-            result.position=position;
+        for (let i = 0; i < filteredResults.length; i++) {
+            const result = filteredResults[i];
+
+            if (i > 0 && result.total === filteredResults[i - 1].total) {
+                result.position = filteredResults[i - 1].position;
+            } else {
+                result.position = i + 1;
+            }
+
             await result.save();
-            position++;
         }
         res.status(200).json({message: "Class positions generated successfully"});
     }catch(error){
@@ -66,6 +75,12 @@ const getResultsByStudent=async(req,res)=>{
     try {
         const studentId=req.params.studentId;
         const results=await Result.find({student:studentId});
+
+        const student=await Student.findById(studentId);
+        if(req.user.role==='teacher' && req.user.assignedClass !== student.classLevel){
+            return res.status(403).json({ message: 'forbidden access: You can only view results of students from your assigned class' });
+        }
+
         res.status(200).json(results);
     } catch (error) {
         res.status(500).json({message: "Error fetching results", error: error.message});
@@ -76,6 +91,11 @@ const getResultsByStudent=async(req,res)=>{
 const getResultsByClassTermYear=async(req,res)=>{
     try {
         const {classLevel, term, academicYear}=req.body;
+
+        if(req.user.role==='teacher' && req.user.assignedClass !== classLevel){
+            return res.status(403).json({ message: 'forbidden access: You can only view results of your assigned class' });
+        }
+
         const results=await Result.find({term, academicYear}).populate({path: 'student', match: {classLevel}});
         const filteredResults=results.filter(result=> result.student !== null);
         res.status(200).json(filteredResults);
