@@ -4,13 +4,14 @@ const jwt=require('jsonwebtoken');
 
 const registerUser=async(req,res)=>{
     try {
-        const {name,email,password,role}=req.body;
+        const {name,email,password,role, assignedClass}=req.body;
         const hashedPassword=await bcrypt.hash(password,10);
         const newUser=new User({
             name,
             email,
             password:hashedPassword,
             role,
+            assignedClass
         });
         await newUser.save();
         res.status(201).json({message:'User registered successfully'});
@@ -36,7 +37,8 @@ const loginUser=async(req,res)=>{
             userId:user._id,
             name:user.name,
             role:user.role,
-            email:user.email
+            email:user.email,
+            assignedClass:user.assignedClass
         },
             process.env.JWT_SECRET,
             {expiresIn:'1h'}
