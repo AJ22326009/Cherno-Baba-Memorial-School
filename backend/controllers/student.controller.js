@@ -29,6 +29,11 @@ const getStudentById=async(req,res)=>{
         if(!student){
             return res.status(404).json({message: "Student not found"});
         }
+
+        if(req.user.role==='teacher' && req.user.assignedClass !== student.classLevel){
+            return res.status(403).json({ message: 'forbidden access: You can only access students from your assigned class' });
+        }
+        
         res.status(200).json(student);
     } catch (error) {
         res.status(500).json({message: "Error fetching student", error: error.message});
