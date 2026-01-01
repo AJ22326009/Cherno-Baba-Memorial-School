@@ -50,12 +50,21 @@ const deleteTeacher=async(req,res)=>{
 const updatePassword=async(req,res)=>{
     try {
         const userId=req.params.id;
-        const {password}=req.body;
-        if(password ===''){
+        const {current, newPassword}=req.body;
+        if(current==='' || newPassword===''){
+            return res.status(400).json({message: "Please provide both current and new passwords"});
+        }
+        if(current ==='' && newPassword===''){
             return res.status(400).json({message: "current password maintained (no changes made)"});
         }
 
-        const hashedPassword=await bcrypt.hash(password, 10);
+        const isMatch=await bcrypt.compare(current, req.user.password);
+
+        if(!isMatch){
+            return res.status(400).json({message: "Current password is incorrect"});
+        }
+
+        const hashedPassword=await bcrypt.hash(newPassword, 10);
 
         await User.findByIdAndUpdate(userId, {password: hashedPassword});
         res.status(200).json({message: "Password updated successfully"});

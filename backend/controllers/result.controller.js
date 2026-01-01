@@ -5,7 +5,7 @@ const Student=require('../models/Student.model');
 //create a result
 const createResult=async(req,res)=>{
     try{
-        const {studentName, term, academicYear, scores}=req.body;
+        const {studentName, term, scores}=req.body;
 
         const student=await Student.findOne({fullName: studentName});
         if(!student){
@@ -16,7 +16,7 @@ const createResult=async(req,res)=>{
             return res.status(403).json({ message: 'You can only create results for students from your assigned class' });
         }
 
-        const existingResult=await Result.findOne({student:student._id, term, academicYear});
+        const existingResult=await Result.findOne({student:student._id, term});
         if(existingResult){
             return res.status(400).json({message: "This result already exists"});
         }
@@ -33,7 +33,6 @@ const createResult=async(req,res)=>{
         const newResult=new Result({
             student:student._id,
             term,
-            academicYear,
             scores,
             total
         });
@@ -44,11 +43,11 @@ const createResult=async(req,res)=>{
     }
 }
 
-//generate class positions of particular term and academic year
+//generate class positions of particular term
 const generateClassPositions=async(req,res)=>{
     try{
-        const {classLevel, term, academicYear}=req.body;
-        const results= await Result.find({term, academicYear}).populate({path: 'student', match: {classLevel}});
+        const {classLevel, term}=req.body;
+        const results= await Result.find({term}).populate({path: 'student', match: {classLevel}});
         const filteredResults=results.filter(result=> result.student !== null);
 
         filteredResults.sort((a, b) => b.total - a.total);
@@ -87,16 +86,16 @@ const getResultsByStudent=async(req,res)=>{
     }
 }
 
-//get all the results of a particular class, term and academic year
-const getResultsByClassTermYear=async(req,res)=>{
+//get all the results of a particular class and term
+const getResultsByClassTerm=async(req,res)=>{
     try {
-        const {classLevel, term, academicYear}=req.body;
+        const {classLevel, term}=req.body;
 
         if(req.user.role==='teacher' && req.user.assignedClass !== classLevel){
             return res.status(403).json({ message: 'forbidden access: You can only view results of your assigned class' });
         }
 
-        const results=await Result.find({term, academicYear}).populate({path: 'student', match: {classLevel}});
+        const results=await Result.find({term}).populate({path: 'student', match: {classLevel}});
         const filteredResults=results.filter(result=> result.student !== null);
         res.status(200).json(filteredResults);
     } catch (error) {
@@ -115,4 +114,4 @@ const getAllResults=async(req,res)=>{
 }
 
 
-module.exports={createResult, generateClassPositions, getResultsByStudent, getResultsByClassTermYear, getAllResults};
+module.exports={createResult, generateClassPositions, getResultsByStudent, getResultsByClassTerm, getAllResults};
