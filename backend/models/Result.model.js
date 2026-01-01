@@ -11,11 +11,6 @@ const ResultSchema=new mongoose.Schema({
         enum: [1, 2, 3],
         required: true
     },
-    academicYear:{
-        type: String,
-        required: true,
-        match: /^\d{4}\/\d{4}$/
-    },
     scores:[
         {
             subject:{
@@ -40,6 +35,6 @@ const ResultSchema=new mongoose.Schema({
 }
 ,{timestamps:true});
 
-ResultSchema.index({ student: 1, term: 1, academicYear: 1 }, { unique: true });
+ResultSchema.index({ student: 1, term: 1}, { unique: true });
 
 module.exports=mongoose.model('Result',ResultSchema);
