@@ -25,6 +25,9 @@ const UserSchema = new mongoose.Schema({
         required: function() {
             return this.role === 'teacher';
         }
+    },
+    imageUrl:{
+        type: String,
     }
 },{ timestamps: true }
 );
