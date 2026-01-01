@@ -3,6 +3,7 @@ const mongoose=require('mongoose');
 const StudentSchema=new mongoose.Schema({
     fullName:{
         type: String,
+        index: true,
         required: true
     },
     admissionNumber:{
@@ -15,10 +16,9 @@ const StudentSchema=new mongoose.Schema({
         enum: ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'],
         required: true
     },
-    status:{
+    gender:{
         type: String,
-        default: 'active',
-        enum: ['active', 'inactive'],
+        enum: ['male', 'female'],
         required: true
     }
 },{timestamps:true});
