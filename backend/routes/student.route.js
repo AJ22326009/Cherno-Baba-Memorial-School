@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {createStudent, getAllStudents, getStudentById, getStudentsByClassLevel, updateStudent, deleteStudent} = require('../controllers/student.controller');
+const {createStudent, getAllStudents, getStudentById, getStudentsByClassLevel, updateStudent, deleteStudent, searchStudents} = require('../controllers/student.controller');
 const {authorize, classTeacherAndAdmin}=require('../middleware/authorize.middleware');
 
 //create a new student
@@ -11,6 +11,9 @@ router.get('/', authorize('admin'), getAllStudents);
 
 //get all students from a particular class level
 router.get('/class/:classLevel', classTeacherAndAdmin, getStudentsByClassLevel);
+
+//search students by name
+router.get('/name', authorize('admin'), searchStudents);
 
 //get a student by ID
 router.get('/:id', getStudentById);

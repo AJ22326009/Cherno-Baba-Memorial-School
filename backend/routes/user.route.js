@@ -14,6 +14,6 @@ router.get('/:id', authorize('admin'), getUserById);
 router.delete('/:id', authorize('admin'), deleteTeacher);
 
 //route to update password
-router.put('/:id/password', onlyParticularUser, updatePassword);
+router.patch('/:id/password', onlyParticularUser, updatePassword);
 
 module.exports=router;
