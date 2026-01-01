@@ -1,1 +1,148 @@
-<p>dashboard works!</p>
+<div class="container mt-4">
+    <div class="welcome" style="margin: 20px;">
+        <h2>Welcome <span>User Name</span> to CBMS portal</h2>
+    </div>
+
+
+    <div class="container-fluid" style="margin-bottom: 40px;">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>10</h3>
+
+                        <p>Teachers</p>
+                    </div>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>5</h3>
+
+                        <p>Students</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>3:2</h3>
+
+                        <p>Male:Female [absolute ratio]</p>
+                    </div>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>6</h3>
+
+                        <p>Classes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg d-flex flex-column align-items-center">
+                    <a routerLink="/articles" class="btn btn-primary m-2">Register User</a>
+                    <a routerLink="/articles/create" class="btn btn-primary m-2">Register Student</a>
+                </div>
+            </div>
+            <!-- ./col -->
+        </div>
+    </div>
+
+
+    <div style="margin-bottom: 40px;">
+        <h3>Latest Registered Students</h3>
+        <table class="table table-bordered table-success">
+            <thead>
+                <tr>
+                    <th>AN</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Gender</th>
+                    <th>Date Registered</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>John Doe</td>
+                    <td>Grade 10</td>
+                    <td>Male</td>
+                    <td>2024-01-15</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Jane Smith</td>
+                    <td>Grade 9</td>
+                    <td>Female</td>
+                    <td>2024-01-16</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-bottom: 40px;">
+        <h3>Results Search</h3>
+        <em>AN 0 means all students in Grade #</em>
+        
+        <div class="card">
+            <div class="card-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="number" class="form-control" id="studentId" name="studentId"
+                                    placeholder="student admission number">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <select class="form-control" name="class" id="class">
+                                    <option value="">Select Class</option>
+                                    <option value="Grade 1">Grade 1</option>
+                                    <option value="Grade 2">Grade 2</option>
+                                    <option value="Grade 3">Grade 3</option>
+                                    <option value="Grade 4">Grade 4</option>
+                                    <option value="Grade 5">Grade 5</option>
+                                    <option value="Grade 6">Grade 6</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <select class="form-control" id="term" name="term" required>
+                                    <option value="">Select Term</option>
+                                    <option value="1">Term 1</option>
+                                    <option value="2">Term 2</option>
+                                    <option value="3">Term 3</option>
+                                    <option value="0">All Terms</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
