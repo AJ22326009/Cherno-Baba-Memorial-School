@@ -1,1 +1,82 @@
-<p>dashboard works!</p>
+<div class="container mt-4">
+    <div class="welcome" style="margin: 20px;">
+        <h2>Welcome <span>User Name</span> to CBMS portal</h2>
+    </div>
+
+
+    <div class="container-fluid" style="margin-bottom: 40px;">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>Grade 6</h3>
+
+                        <p>Class</p>
+                    </div>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>5</h3>
+
+                        <p>Students</p>
+                    </div>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>3:2</h3>
+
+                        <p>Male:Female [absolute ratio]</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg d-flex flex-column align-items-center">
+                    <a routerLink="/articles" class="btn btn-primary m-2">View Results</a>
+                    <a routerLink="/articles/create" class="btn btn-primary m-2">Enter Results</a>
+                </div>
+            </div>
+            <!-- ./col -->
+        </div>
+    </div>
+
+
+    <div style="margin-bottom: 40px;">
+        <h3>Students in Grade 6</h3>
+        <table class="table table-bordered table-success">
+            <thead>
+                <tr>
+                    <th>AN</th>
+                    <th>Name</th>
+                    <th>Gender</th>
+                    <th>Date Registered</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>John Doe</td>
+                    <td>Male</td>
+                    <td>2024-01-15</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Jane Smith</td>
+                    <td>Female</td>
+                    <td>2024-01-16</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
