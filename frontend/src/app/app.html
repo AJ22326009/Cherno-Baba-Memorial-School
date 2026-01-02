@@ -1,4 +1,6 @@
-<app-navbar class="sticky-top"></app-navbar>
+@if(authService.isLoggedIn()) {
+    <app-navbar class="sticky-top"></app-navbar>
+}
 
 <div class="main-content">
     <router-outlet></router-outlet>
