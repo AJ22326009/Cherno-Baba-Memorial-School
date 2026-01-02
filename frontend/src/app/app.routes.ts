@@ -6,11 +6,16 @@ import { Users } from './admin/users/users';
 import { Results } from './teacher/results/results';
 import { Login } from './auth/login/login';
 import { UserProfile } from './shared/user-profile/user-profile';
+import { roleGuard } from './guards/role-guard';
+import { authGuard } from './guards/auth-guard';
+import { Unauthorized } from './auth/unauthorized/unauthorized';
 
 export const routes: Routes = [
     // ADMIN GROUP
     {
         path: 'admin',
+        canActivate: [authGuard, roleGuard],
+        data: { roles: ['admin'] },
         children: [
             { path: 'students', component: StudentsForAdmin },
             { path: 'users', component: Users },
@@ -22,6 +27,8 @@ export const routes: Routes = [
     // TEACHER GROUP
     {
         path: 'teacher',
+        canActivate: [authGuard, roleGuard],
+        data: { roles: ['teacher'] },
         children: [
             { path: 'results', component: Results },
             { path: '', component: TeacherDashboard }, // Matches /teacher
@@ -30,7 +37,8 @@ export const routes: Routes = [
     },
 
     { path: 'login', component: Login },
-    { path: 'profile', component: UserProfile },
+    { path: 'profile',canActivate: [authGuard, roleGuard], data: { roles: ['admin', 'teacher'] }, component: UserProfile },
+    {path: 'unauthorized', component: Unauthorized}, // Placeholder for Unauthorized component
     { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: '**', redirectTo: 'login' } // Global 404 fallback
 ];
