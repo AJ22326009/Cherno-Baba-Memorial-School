@@ -6,9 +6,9 @@ import { Users } from './admin/users/users';
 import { Results } from './teacher/results/results';
 import { Login } from './auth/login/login';
 import { UserProfile } from './shared/user-profile/user-profile';
-import { roleGuard } from './guards/role-guard';
-import { authGuard } from './guards/auth-guard';
-import { Unauthorized } from './auth/unauthorized/unauthorized';
+import { roleGuard } from './auth/guards/role-guard';
+import { authGuard } from './auth/guards/auth-guard';
+import { Error } from './auth/error/error';
 
 export const routes: Routes = [
     // ADMIN GROUP
@@ -20,7 +20,7 @@ export const routes: Routes = [
             { path: 'students', component: StudentsForAdmin },
             { path: 'users', component: Users },
             { path: '', component: AdminDashboard }, // Matches /admin
-            { path: '**', component: AdminDashboard } // Matches /admin/invalid-path
+            { path: '**', component: Error, data: { reason: 'Page not found' } } // Matches /admin/invalid-path
         ]
     },
 
@@ -32,13 +32,13 @@ export const routes: Routes = [
         children: [
             { path: 'results', component: Results },
             { path: '', component: TeacherDashboard }, // Matches /teacher
-            { path: '**', component: TeacherDashboard } // Matches /teacher/invalid-path
+            { path: '**', component: Error, data: { reason: 'Page not found' } } // Matches /teacher/invalid-path
         ]
     },
 
     { path: 'login', component: Login },
     { path: 'profile',canActivate: [authGuard, roleGuard], data: { roles: ['admin', 'teacher'] }, component: UserProfile },
-    {path: 'unauthorized', component: Unauthorized}, // Placeholder for Unauthorized component
+    {path: 'error', component: Error}, // Placeholder for Error component
     { path: '', redirectTo: 'login', pathMatch: 'full' },
-    { path: '**', redirectTo: 'login' } // Global 404 fallback
+    { path: '**', component: Error, data: { reason: 'Page not found' } }
 ];
