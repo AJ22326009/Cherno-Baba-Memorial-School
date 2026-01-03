@@ -1,0 +1,24 @@
+<div class="error-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+  @if(errorMessage==='Server Error'){
+     <i class="fas fa-exclamation-triangle fa-3x" style="color: orange;"></i>
+    <h1>{{ errorMessage }}</h1>
+    <p>There is a server error. Please try again later.</p>
+    <a (click)="goToLogin()" class="btn btn-primary">Back to Login</a>
+  }
+  @else if(errorMessage==='Server Down'){
+    <i class="fas fa-server fa-3x" style="color: orange;"></i>
+    <h1>{{ errorMessage }}</h1>
+    <p>The server is currently down or network error. Please try again later.</p>
+    <a (click)="goToLogin()" class="btn btn-primary">Back to Login</a>
+  }@else if(errorMessage==='Page not found'){
+     <i class="fas fa-file fa-3x" style="color: orange;"></i>
+    <h1>{{ errorMessage }}</h1>
+    <p>This page could not be found.</p>
+    <a (click)="goToDashboard()" class="btn btn-primary">Back to Dashboard</a>
+  }@else {
+    <i class="fas fa-lock fa-3x" style="color: red;"></i>
+    <h1>{{ errorMessage }}</h1>
+    <p>You do not have permission to view this page.</p>
+    <a (click)="goToDashboard()" class="btn btn-primary">Back to Dashboard</a>
+  }
+</div>
