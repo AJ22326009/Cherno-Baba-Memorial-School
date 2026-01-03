@@ -27,11 +27,13 @@ export const interceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if(error.status === 0){
-        router.navigate(['/unauthorized']),{ queryParams: { reason: 'Server Down' } };
+        router.navigate(['/error'],{ queryParams: { reason: 'Server Down' } });
+        console.log('Server is down');
       }
 
       if(error.status === 500){
-        router.navigate(['/unauthorized']),{ queryParams: { reason: 'Server Error' } };
+        router.navigate(['/error'],{ queryParams: { reason: 'Server Error' } });
+        console.log('Internal Server Error');
       }
 
       return throwError(()=>error);
