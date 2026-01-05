@@ -20,8 +20,20 @@ export class AuthService {
       return;
     }
   
+    //logic should be changed when refresh token is implemented
     try {
-      this.user = jwtDecode<User>(accessToken);
+      const decoded = jwtDecode<User & {exp: number}>(accessToken);
+      if (decoded.exp * 1000 < Date.now()) {
+        this.user = null;
+        this.logout();
+      } else {
+        this.user = decoded;
+        if(this.user?.role==='admin'){
+          this.router.navigate(['/admin']);
+        }else if(this.user?.role==='teacher'){
+          this.router.navigate(['/teacher']);
+        }
+      }
     } catch (error) {
       this.logout();
     }
