@@ -30,7 +30,7 @@
             </div>
             }
             @if(changePasswordMode){
-            <form>
+            <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
                 <div class="card-body">
                     <div class="form-group">
                         <input type="password" class="form-control" formControlName="currentPassword"
@@ -48,14 +48,26 @@
                     </div>
                 </div>
                  <div class="card-footer d-flex justify-content-center">
-                     <button type="button" (click)="changePasswordMode=false" class="btn btn-secondary mr-2">
+                     <button type="button" (click)="changePasswordMode=false"  class="btn btn-secondary mr-2">
                     cancel
                 </button>
-                <button type="submit" class="btn btn-primary">
-                    Update
+                <button type="submit" class="btn btn-primary"[disabled]="passwordForm.invalid">
+                    {{loading ? 'Updating...' : 'Update'}}
                 </button>
             </div>
             </form>
+            @if(success!==''){
+            <div class="alert alert-success" role="alert" style="position: fixed; bottom: 20px; right: 20px;">
+                {{success}}
+            </div>
+            }
+
+            @if(error!==''){
+            <div class="alert alert-danger" role="alert" style="position: fixed; bottom: 20px; right: 20px;">
+                {{error}}
+            </div>
+            }
+            
         }
         </div>
         <!-- /.card-body -->
