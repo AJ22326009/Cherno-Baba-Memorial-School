@@ -1,6 +1,6 @@
 <div class="container mt-4">
     <div class="welcome" style="margin: 20px;">
-        <h2>Welcome <span>User Name</span> to CBMS portal</h2>
+        <h2>Welcome <span>{{user.name}}</span> to CBMS portal</h2>
     </div>
 
 
@@ -11,7 +11,7 @@
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3>10</h3>
+                        <h3>{{teacherCount}}</h3>
 
                         <p>Teachers</p>
                     </div>
@@ -22,7 +22,7 @@
                 <!-- small box -->
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>5</h3>
+                        <h3>{{studentCount}}</h3>
 
                         <p>Students</p>
                     </div>
@@ -32,7 +32,7 @@
                 <!-- small box -->
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>3:2</h3>
+                        <h3>{{maleStudents}}:{{femaleStudents}}</h3>
 
                         <p>Male:Female [absolute ratio]</p>
                     </div>
@@ -52,8 +52,8 @@
             <div class="col-lg-3 col-6">
                 <!-- small box -->
                 <div class="small-box bg d-flex flex-column align-items-center">
-                    <a routerLink="/articles" class="btn btn-primary m-2">Register User</a>
-                    <a routerLink="/articles/create" class="btn btn-primary m-2">Register Student</a>
+                    <a class="btn btn-primary m-2" (click)="navigateToRegisterUser()">Register User</a>
+                    <a class="btn btn-primary m-2" (click)="navigateToRegisterStudent()">Register Student</a>
                 </div>
             </div>
             <!-- ./col -->
@@ -63,7 +63,7 @@
 
     <div style="margin-bottom: 40px;">
         <h3>Latest Registered Students</h3>
-        <table class="table table-bordered table-success">
+        <table class="table table-bordered table-success table-responsive">
             <thead>
                 <tr>
                     <th>AN</th>
@@ -74,20 +74,16 @@
                 </tr>
             </thead>
             <tbody>
+                @for(student of latestStudents; track student.admissionNumber) {
                 <tr>
-                    <td>1</td>
-                    <td>John Doe</td>
-                    <td>Grade 10</td>
-                    <td>Male</td>
-                    <td>2024-01-15</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Jane Smith</td>
-                    <td>Grade 9</td>
-                    <td>Female</td>
-                    <td>2024-01-16</td>
-                </tr>
+                    <td>{{student.admissionNumber}}</td>
+                    <td>{{student.fullName}}</td>
+                    <td>{{student.classLevel}}</td>
+                    <td>{{student.gender}}</td>
+                    <td>{{student.createdAt | date:'mediumDate'}}</td>
+                </tr> 
+                }
+               
             </tbody>
         </table>
     </div>
