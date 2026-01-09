@@ -7,7 +7,7 @@ const StudentSchema=new mongoose.Schema({
         required: true
     },
     admissionNumber:{
-        type: String,
+        type: Number,
         required: true,
         unique: true
     },
