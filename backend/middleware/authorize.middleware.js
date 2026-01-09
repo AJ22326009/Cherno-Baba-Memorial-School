@@ -32,10 +32,11 @@ const classTeacherAndAdmin=(req,res,next)=>{
         return res.status(401).json({ message: 'user not logged in' });
     }
 
-    const assignedClass=req.user.assignedClass;
-
-    if(req.body.classLevel !== assignedClass && req.user.role==='teacher'){
-        return res.status(403).json({ message: 'forbidden access: You can only do this to your assigned class' });
+    if(req.user.role==='teacher'){
+        const assignedClass=req.user.assignedClass;
+        if(req.params.classLevel !== assignedClass){
+            return res.status(403).json({ message: 'forbidden access: You can only do this to your assigned class' });
+        }
     }
 
     next();
