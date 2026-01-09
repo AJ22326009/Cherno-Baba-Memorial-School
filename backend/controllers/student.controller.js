@@ -1,10 +1,17 @@
 const Student = require('../models/Student.model');
-
+const Counter = require('../models/conter.model');
 // Create a new student
 const createStudent = async (req, res) => {
     try {
-        const { fullName, admissionNumber, classLevel, gender } = req.body;
-        const newStudent = new Student({ fullName, admissionNumber, classLevel, gender });
+        const { fullName, classLevel, gender } = req.body;
+        const newStudent = new Student({ fullName, classLevel, gender });
+        // Generate admission number using Counter model
+        const counter = await Counter.findOneAndUpdate(
+            { id: 'admissionNumber'},
+            { $inc: { seq: 1 } },
+            { new: true, upsert: true }
+        );
+        newStudent.admissionNumber = counter.seq;
         await newStudent.save();
         res.status(201).json({ message: "Student created successfully", student: newStudent });
     } catch (error) {
@@ -43,7 +50,7 @@ const getStudentById = async (req, res) => {
 //search for students by name
 const searchStudents = async (req, res) => {
     try {
-        const searchTerm = req.params.name;
+        const searchTerm = req.query.name;
 
         if (!searchTerm) {
             return res.status(400).json({ message: "Search term is required" });

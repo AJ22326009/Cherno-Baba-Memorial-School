@@ -50,15 +50,14 @@ const deleteTeacher=async(req,res)=>{
 const updatePassword=async(req,res)=>{
     try {
         const userId=req.params.id;
-        const {current, newPassword}=req.body;
-        if(current==='' || newPassword===''){
+        const {currentPassword, newPassword}=req.body;
+        if(currentPassword==='' || newPassword===''){
             return res.status(400).json({message: "Please provide both current and new passwords"});
         }
-        if(current ==='' && newPassword===''){
-            return res.status(400).json({message: "current password maintained (no changes made)"});
-        }
 
-        const isMatch=await bcrypt.compare(current, req.user.password);
+        const user=await User.findById(req.user.userId);
+        const correctCurrentPassword=user.password;
+        const isMatch=await bcrypt.compare(currentPassword, correctCurrentPassword);
 
         if(!isMatch){
             return res.status(400).json({message: "Current password is incorrect"});
@@ -73,4 +72,20 @@ const updatePassword=async(req,res)=>{
     }
 }
 
-module.exports={getAllUsers,getUserById,deleteTeacher, updatePassword};
+//update everything except password
+const updateUser=async(req,res)=>{
+    try {
+        const userData=req.body;
+        if(userData.password){
+            res.status(400).json({message: "Password cannot be updated here"});
+        }
+
+        const userId=req.params.id;
+        await User.findByIdAndUpdate(userId, userData);
+        res.status(200).json({message: "User updated successfully"});
+    } catch (error) {
+        res.status(500).json({message: "Error updating user", error: error.message});
+    }
+}
+
+module.exports={getAllUsers,getUserById,deleteTeacher, updatePassword, updateUser};
