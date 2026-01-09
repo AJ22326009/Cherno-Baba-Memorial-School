@@ -1,18 +1,18 @@
 <div class="container mt-4">
 
-    <div class="small-box bg d-flex flex-column align-items-center">
-        <a class="btn btn-primary m-2">Register a new Student</a>
+    <div class="bg d-flex flex-column align-items-center">
+        <a class="btn btn-primary m-2" (click)="toRegisterMode()">Register a new Student</a>
     </div>
 
     <div style="margin-bottom: 40px;">
         <h3>View Class</h3>
         <div class="card" style="padding: 10px">
             <div class="card-body">
-                <form>
+                <form [formGroup]="classForm" (ngSubmit)="fetchStudentsByClassLevel(classForm.value.classLevel)">
                     <div class="row">
                         <div class="col-md-8">
                             <div class="form-group">
-                                <select class="form-control" name="class" id="class">
+                                <select class="form-control" formControlName="classLevel" id="class">
                                     <option value="">Select Class</option>
                                     <option value="Grade 1">Grade 1</option>
                                     <option value="Grade 2">Grade 2</option>
@@ -25,14 +25,20 @@
                         </div>
 
                         <div class="col-md-4">
-                            <button type="submit" class="btn btn-primary">Search</button>
+                            <button type="submit" class="btn btn-primary" [disabled]="classForm.invalid || loadingClass">
+                                @if(loadingClass){
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                }@else{
+                                    view
+                                }
+                            </button>
                         </div>
 
                     </div>
                 </form>
             </div>
 
-            <table class="table table-striped">
+            <table class="table table-striped table-responsive">
                 <thead>
                     <tr>
                         <th>AN</th>
@@ -43,31 +49,29 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @for(student of studentsInClass; track student.admissionNumber) {
                     <tr>
-                        <td>1</td>
-                        <td>John Doe</td>
-                        <td>Male</td>
-                        <td>2024-01-15</td>
+                        <td>{{student.admissionNumber}}</td>
+                        <td>{{student.fullName}}</td>
+                        <td>{{student.gender}}</td>
+                        <td>{{student.createdAt | date:'mediumDate'}}</td>
                         <td>
-                            <a href="#" class="btn btn-primary btn-sm mr-4">Edit</a>
-                            <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                            <a class="btn btn-primary btn-sm mr-4" (click)="toUpdateMode(student)">Edit</a>
+                            <a class="btn btn-danger btn-sm" (click)="deleteStudent(student._id)">
+                                @if(loadingDelete && deleteId === student._id){
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                }@else{
+                                Delete
+                                }
+                            </a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jane Smith</td>
-                        <td>Female</td>
-                        <td>2024-01-16</td>
-                        <td>
-                            <a href="#" class="btn btn-primary btn-sm mr-4">Edit</a>
-                            <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
+                    }
                 </tbody>
             </table>
             <div class="card-footer bg-white border-top-0">
                 <p class="text-center mb-0">
-                    <strong>Class Teacher:</strong> <span class="text-muted">Mr. Ousainou Secka</span>
+                    <strong>Class Teacher: </strong> <span class="text-muted">{{ classTeacher ? classTeacher : 'Not Assigned' }}</span>
                 </p>
             </div>
         </div>
@@ -78,23 +82,29 @@
         <h3>Search for a student</h3>
         <div class="card" style="padding: 10px">
             <div class="card-body">
-                <form>
+                <form [formGroup]="searchForm" (ngSubmit)="searchStudentsByName()">
                     <div class="row">
                         <div class="col-md-8">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="student" name="student"
-                                    placeholder="Enter Student's name">
+                                <input type="text" class="form-control" id="student" formControlName="name"
+                                    placeholder="Enter student name">
                             </div>
                         </div>
 
                         <div class="col-md-4">
-                            <button type="submit" class="btn btn-primary">Search</button>
+                            <button type="submit" class="btn btn-primary" [disabled]="searchForm.invalid || loadingSearch">
+                                @if(loadingSearch){
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                }@else{
+                                    Search
+                                }
+                            </button>
                         </div>
 
                     </div>
                 </form>
             </div>
-            <table class="table table-striped">
+            <table class="table table-striped table-responsive">
                 <thead>
                     <tr>
                         <th>AN</th>
@@ -106,56 +116,47 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @for(student of searchedStudents; track student.admissionNumber) {
                     <tr>
-                        <td>1</td>
-                        <td>John Doe</td>
-                        <td>Male</td>
-                        <td>Grade 6</td>
-                        <td>2024-01-15</td>
+                        <td>{{student.admissionNumber}}</td>
+                        <td>{{student.fullName}}</td>
+                        <td>{{student.gender}}</td>
+                        <td>{{student.classLevel}}</td>
+                        <td>{{student.createdAt | date:'mediumDate'}}</td>
                         <td>
-                            <a href="#" class="btn btn-primary btn-sm mr-4">Edit</a>
-                            <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                            <a class="btn btn-primary btn-sm mr-4" (click)="toUpdateMode(student)">Edit</a>
+                            <a class="btn btn-danger btn-sm" (click)="deleteStudent(student._id)">
+                                @if(loadingDelete){
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                }@else{
+                                Delete
+                                }
+                            </a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jane Smith</td>
-                        <td>Female</td>
-                        <td>Grade 5</td>
-                        <td>2024-01-16</td>
-                        <td>
-                            <a href="#" class="btn btn-primary btn-sm mr-4">Edit</a>
-                            <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
-                    </tr>
+                    }
                 </tbody>
             </table>
         </div>
     </div>
 
 
-
-    <div class="card card-primary">
+    @if(registerMode || updateMode) {
+    <div class="card card-primary" id="registerEdit">
         <div class="card-header">
-            <h3 class="card-title">Register / Edit</h3>
+            <h3 class="card-title">{{registerMode? 'Register Student': "Update Student"}}</h3>
         </div>
-        <form>
+        <form [formGroup]="registerUpdateForm" (ngSubmit)="registerMode? registerStudent() : updateStudent()">
             <div class="card-body">
                 <div class="form-group">
-                    <label for="admissionNumber">Admission Number</label>
-                    <input type="number" class="form-control" formControlName="admissionNumber" id="admissionNumber"
-                        placeholder="Enter admission number">
-                </div>
-
-                <div class="form-group">
                     <label for="fullname">Full Name</label>
-                    <input type="text" class="form-control" formControlName="fullname" id="fullname"
-                        placeholder="Enter full name">
+                    <input type="text" class="form-control" id="fullname"
+                        placeholder="Enter full name" formControlName="fullName">
                 </div>
 
                 <div class="form-group">
                     <label for="class">Class</label>
-                    <select class="form-control" formControlName="class" id="class">
+                    <select class="form-control" id="class" formControlName="classLevel">
                         <option value="">Select Class</option>
                         <option value="Grade 1">Grade 1</option>
                         <option value="Grade 2">Grade 2</option>
@@ -168,20 +169,39 @@
 
                 <div class="form-group">
                     <label for="gender">Gender</label>
-                    <select class="form-control" formControlName="gender" id="gender">
+                    <select class="form-control" id="gender" formControlName="gender">
                         <option value="">Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
                     </select>
                 </div>
             </div>
             <!-- /.card-body -->
             <div class="card-footer d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary">
-                    Register/ update
+                <button type="button" class="btn btn-secondary mr-3" (click)="cancel()">
+                    cancel
+                </button>
+                <button type="submit" class="btn btn-primary" [disabled]="registerUpdateForm.invalid || loadingRegisterUpdate">
+                    @if(loadingRegisterUpdate){
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    }@else{
+                        {{registerMode ? 'Register' : 'Update'}}
+                    }
                 </button>
             </div>
         </form>
     </div>
+    }
 
+    @if(error){
+      <div class="alert alert-danger" role="alert" style="position: fixed; bottom: 20px; right: 20px;">
+        {{ error }}
+      </div>
+    }
+
+    @if(success){
+      <div class="alert alert-success" role="alert" style="position: fixed; bottom: 20px; right: 20px;">
+        {{ success}}
+      </div>
+    }
 </div>
