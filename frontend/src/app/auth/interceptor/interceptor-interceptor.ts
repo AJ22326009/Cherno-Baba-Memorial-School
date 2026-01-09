@@ -26,15 +26,15 @@ export const interceptor: HttpInterceptorFn = (req, next) => {
         authService.logout();
       }
 
-      if(error.status === 0){
-        router.navigate(['/error'],{ queryParams: { reason: 'Server Down' } });
-        console.log('Server is down');
-      }
+      // if(error.status === 0){
+      //   router.navigate(['/error'],{ queryParams: { reason: 'Server Down' } });
+      //   console.log('Server is down');
+      // }
 
-      if(error.status === 500){
-        router.navigate(['/error'],{ queryParams: { reason: 'Server Error' } });
-        console.log('Internal Server Error');
-      }
+      // if(error.status === 500){
+      //   router.navigate(['/error'],{ queryParams: { reason: 'Server Error' } });
+      //   console.log('Internal Server Error');
+      // }
 
       return throwError(()=>error);
     })
