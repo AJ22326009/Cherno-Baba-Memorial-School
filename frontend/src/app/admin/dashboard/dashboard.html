@@ -4,7 +4,7 @@
     </div>
 
 
-    <div class="container-fluid" style="margin-bottom: 40px;">
+    <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
         <div class="row">
             <div class="col-lg-3 col-6">
@@ -14,6 +14,9 @@
                         <h3>{{teacherCount}}</h3>
 
                         <p>Teachers</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
                     </div>
                 </div>
             </div>
@@ -26,6 +29,9 @@
 
                         <p>Students</p>
                     </div>
+                    <div class="icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
@@ -35,6 +41,9 @@
                         <h3>{{maleStudents}}:{{femaleStudents}}</h3>
 
                         <p>Male:Female [absolute ratio]</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-venus-mars"></i>
                     </div>
                 </div>
             </div>
@@ -47,23 +56,22 @@
 
                         <p>Classes</p>
                     </div>
+                    <div class="icon">
+                        <i class="fas fa-school"></i>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div class="small-box bg d-flex flex-column align-items-center">
-                    <a class="btn btn-primary m-2" (click)="navigateToRegisterUser()">Register User</a>
-                    <a class="btn btn-primary m-2" (click)="navigateToRegisterStudent()">Register Student</a>
-                </div>
-            </div>
-            <!-- ./col -->
         </div>
     </div>
 
+    <div class="bg d-flex flex-row justify-content-around" style="margin-bottom: 50px;">
+        <a class="btn btn-primary m-2" (click)="navigateToRegisterUser()"><i class="fas fa-user-plus"></i> Register User</a>
+        <a class="btn btn-primary m-2" (click)="navigateToRegisterStudent()"><i class="fas fa-user-plus"></i> Register Student</a>
+    </div>
 
-    <div style="margin-bottom: 40px;">
+    <div style="margin-bottom: 40px;" class="table-responsive">
         <h3>Latest Registered Students</h3>
-        <table class="table table-bordered table-success table-responsive">
+        <table class="table table-bordered table-success">
             <thead>
                 <tr>
                     <th>AN</th>
@@ -90,23 +98,23 @@
 
     <div style="margin-bottom: 40px;">
         <h3>Results Search</h3>
-        <em>AN 0 means all students in Grade #</em>
         
         <div class="card">
             <div class="card-body">
-                <form>
+                <form [formGroup]="searchForm" (ngSubmit)="searchResults()">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <input type="number" class="form-control" id="studentId" name="studentId"
-                                    placeholder="student admission number">
+                                <input type="text" class="form-control" formControlName="name"
+                                    placeholder="enter name">
                             </div>
                         </div>
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <select class="form-control" name="class" id="class">
+                                <select class="form-control" formControlName="classLevel">
                                     <option value="">Select Class</option>
+                                    <option value="all">All Grades</option>
                                     <option value="Grade 1">Grade 1</option>
                                     <option value="Grade 2">Grade 2</option>
                                     <option value="Grade 3">Grade 3</option>
@@ -119,12 +127,12 @@
 
                         <div class="col-md-4">
                             <div class="form-group">
-                                <select class="form-control" id="term" name="term" required>
+                                <select class="form-control" id="term" formControlName="term">
                                     <option value="">Select Term</option>
-                                    <option value="1">Term 1</option>
-                                    <option value="2">Term 2</option>
-                                    <option value="3">Term 3</option>
-                                    <option value="0">All Terms</option>
+                                    <option value="Term 1">Term 1</option>
+                                    <option value="Term 2">Term 2</option>
+                                    <option value="Term 3">Term 3</option>
+                                    <option value="all">All Terms</option>
                                 </select>
                             </div>
                         </div>
@@ -133,12 +141,108 @@
 
                     <div class="row mt-2">
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary">Search</button>
+                            <button type="submit" class="btn btn-primary" [disabled]="searchForm.invalid">
+                                @if(loadingSearch){
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                } @else {
+                               <i class="fas fa-search"></i> Search
+                                }
+                            </button>
                         </div>
                     </div>
                 </form>
+                <div class="d-flex flex-column gap-2">
+                    @if(noResults){
+                    <p class="text-center mt-3 text-danger">No results found.</p>
+                    }
+                    @for(result of results; track result._id){
+                    <div class="card table-responsive border border-info">
+                        <div class="card-body" [id]="result._id">
+                            <div class="border-0">
+                                <div style="min-width: 600px;">
+                                    <div class="row mb-3">
+                                        <div class="col-4">
+                                            <p class="mb-1"><strong>Name:</strong> {{result.student.fullName}}</p>
+                                            <p class="mb-0"><strong>Class:</strong> {{result.student.classLevel}}</p>
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <p class="mb-1"><strong>Gender:</strong> {{result.student.gender}}</p>
+                                            <p class="mb-0"><strong># in class:</strong> {{calStudentsInClass(result.student.classLevel)}}</p>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <p class="mb-1"><strong>{{result.term}}</strong></p>
+                                            <p class="mb-0"><strong>Teacher:</strong>{{findClassTeacher(result.student.classLevel)}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div>
+                                <table class="table table-bordered text-nowrap" style="min-width: 600px;">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th style="width: 70%;">Subject</th>
+                                            <th style="width: 30%;">Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for(sub of result.scores; track sub.subject){
+                                        <tr>
+                                            <td>{{sub.subject}}</td>
+                                            <td>{{sub.score}}</td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="bg-light">
+                                            <th class="text-right">Total:</th>
+                                            <td class="text-bold">{{result.total}}</td>
+                                        </tr>
+                                        <tr class="bg-light">
+                                            <th class="text-right">Position:</th>
+                                            <td class="text-bold text-primary">{{result.position}}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="card-footer bg-white border-top-0">
+                            <button type="button" class="btn btn-danger float-left" (click)="deleteResult(result._id)">
+                                @if(loadingDelete && deleteResultId === result._id){
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                } @else {
+                                <i class="fas fa-trash" ></i> delete
+                                }
+                            </button>
+                            
+                            <button type="button" class="btn btn-primary float-right" ngxPrint [printSectionId]="result._id" [useExistingCss]="true">
+                                <i class="fas fa-print"></i> Print
+                            </button>
+                        </div> 
+                    </div>
+                    }
+                </div>
+                @if(results.length > 0){
+                        <button type="button" class="btn btn-secondary mt-3" (click)="clearSearch()">
+                            <i class="fas fa-times"></i> clear search
+                        </button>
+                    }
             </div>
         </div>
     </div>
 
+    @if(error){
+    <div class="alert alert-danger" role="alert" style="position: fixed; bottom: 20px; right: 20px;">
+        {{ error }}
+    </div>
+    }
+
+    @if(success){
+    <div class="alert alert-success" role="alert" style="position: fixed; bottom: 20px; right: 20px;">
+        {{ success }}
+    </div>
+    }
 </div>
