@@ -7,15 +7,14 @@ const ResultSchema=new mongoose.Schema({
         required: true
     },
     term:{
-        type: Number,
-        enum: [1, 2, 3],
+        type: String,
+        enum: ['Term 1', 'Term 2', 'Term 3'],
         required: true
     },
     scores:[
         {
             subject:{
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Subject',
+                type: String,
                 required: true
             },
             score:{
