@@ -4,10 +4,10 @@
     </div>
 
 
-    <div class="container-fluid" style="margin-bottom: 40px;">
+    <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
         <div class="row">
-            <div class="col-lg-3 col-6">
+            <div class="col-lg-4 col-6">
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
@@ -15,10 +15,13 @@
 
                         <p>Class</p>
                     </div>
+                    <div class="icon">
+                        <i class="fas fa-chalkboard"></i>
+                    </div>
                 </div>
             </div>
             <!-- ./col -->
-            <div class="col-lg-3 col-6">
+            <div class="col-lg-4 col-6">
                 <!-- small box -->
                 <div class="small-box bg-success">
                     <div class="inner">
@@ -26,10 +29,13 @@
 
                         <p>Students</p>
                     </div>
+                    <div class="icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
                 </div>
             </div>
             <!-- ./col -->
-            <div class="col-lg-3 col-6">
+            <div class="col-lg-4 col-6">
                 <!-- small box -->
                 <div class="small-box bg-success">
                     <div class="inner">
@@ -37,19 +43,18 @@
 
                         <p>Male:Female [absolute ratio]</p>
                     </div>
+                    <div class="icon">
+                        <i class="fas fa-venus-mars"></i>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div class="small-box bg d-flex flex-column align-items-center">
-                    <a routerLink="/articles" class="btn btn-primary m-2">View Results</a>
-                    <a routerLink="/articles/create" class="btn btn-primary m-2">Enter Results</a>
-                </div>
-            </div>
-            <!-- ./col -->
         </div>
     </div>
 
+    <div class="bg d-flex flex-row justify-content-around" style="margin-bottom: 50px;">
+        <a class="btn btn-primary m-2" (click)="navigateToResultsSearch()"><i class="fas fa-search"></i> Search Results</a>
+        <a class="btn btn-primary m-2" (click)="navigateToResultsEnter()"><i class="fas fa-edit"></i> Enter Results</a>
+    </div>
 
     <div style="margin-bottom: 40px;" class="table-responsive">
         <h3>Students in {{user.assignedClass}}</h3>

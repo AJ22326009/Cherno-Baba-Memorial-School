@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
 import { StudentService } from '../../shared/services/student.services/student';
 import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +17,7 @@ export class TeacherDashboard implements OnInit {
   maleCount: number=0;
   femaleCount: number=0;
 
-  constructor(private authService: AuthService, private studentService: StudentService) {
+  constructor(private authService: AuthService, private studentService: StudentService, private router: Router) {
     this.user = this.authService.getUser();
   }
 
@@ -40,5 +41,13 @@ export class TeacherDashboard implements OnInit {
     this.studentCount = this.students.length;
     this.maleCount = this.students.filter(student => student.gender === 'male').length;
     this.femaleCount = this.students.filter(student => student.gender ==='female').length;
+  }
+
+  navigateToResultsEnter(){
+    this.router.navigate(['/teacher/results'], { queryParams: { resultEnterMode: 'true' } });
+  }
+
+  navigateToResultsSearch(){
+    this.router.navigate(['/teacher/results'], {queryParams: {resultSearch: 'true'}})
   }
 }
