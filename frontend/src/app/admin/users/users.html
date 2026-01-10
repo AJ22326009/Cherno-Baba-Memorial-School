@@ -4,7 +4,7 @@
     </div>
 
     <div class="bg d-flex flex-column align-items-center mb-3">
-        <a class="btn btn-primary m-2" (click)="toRegisterMode()">Register a new User</a>
+        <a class="btn btn-primary m-2" (click)="toRegisterMode()"><i class="fas fa-user-plus"></i> Register a new User</a>
     </div>
 
     @if(registerMode || updateMode){
@@ -123,16 +123,17 @@
                 </ul>
                 <!--    to be used later-->
                 <div class="flex row m-2" style="justify-content: center;">
-                    <a class="btn btn-primary m-2" style="width: 70px; font-weight: bold;"
-                        (click)="toUpdateMode(user)">Edit</a>
+                    <a class="btn btn-primary m-2"
+                        (click)="toUpdateMode(user)">
+                        <i class="fas fa-edit"></i> Edit</a>
                     @if(user.role !== 'admin'){
-                    <a class="btn btn-danger m-2" style="width: 90px; font-weight: bold;"
+                    <a class="btn btn-danger m-2"
                         (click)="deleteUser(user._id)">
 
                         @if(loadingDelete && deleteId===user._id){
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         }@else{
-                        Delete
+                        <i class="fas fa-trash"></i> Delete
                         }
                     </a>
                     }

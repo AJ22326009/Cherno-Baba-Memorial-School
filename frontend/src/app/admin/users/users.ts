@@ -63,11 +63,26 @@ export class Users implements OnInit {
       this.users = data;
       this.loadingUsers = false
       this.errorLoadingUsers = null;
+
+      this.sortUsersByRoleAndClass();
       },
       error: (err) => {
         this.loadingUsers = false;
         this.errorLoadingUsers = 'Error loading users';
       }
+    });
+  }
+
+  sortUsersByRoleAndClass() {
+    this.users.sort((a, b) => {
+      if (a.role !== b.role) {
+        return a.role === 'admin' ? -1 : 1;
+      }
+      if (a.role === 'teacher') {
+        return b.assignedClass.localeCompare(a.assignedClass, undefined, { numeric: true });
+      }
+
+      return 0;
     });
   }
 
