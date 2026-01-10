@@ -1,7 +1,7 @@
 <div class="container mt-4">
 
     <div class="bg d-flex flex-column align-items-center">
-        <a class="btn btn-primary m-2" (click)="toRegisterMode()">Register a new Student</a>
+        <a class="btn btn-primary m-2" (click)="toRegisterMode()"><i class="fas fa-user-plus"></i> Register a new Student</a>
     </div>
 
     <div style="margin-bottom: 40px;">
@@ -29,7 +29,7 @@
                                 @if(loadingClass){
                                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                 }@else{
-                                    view
+                                   <i class="fas fa-eye"></i> view
                                 }
                             </button>
                         </div>
@@ -37,8 +37,8 @@
                     </div>
                 </form>
             </div>
-
-            <table class="table table-striped table-responsive">
+            <div class="table-responsive">
+            <table class="table table-striped">
                 <thead>
                     <tr>
                         <th>AN</th>
@@ -56,12 +56,13 @@
                         <td>{{student.gender}}</td>
                         <td>{{student.createdAt | date:'mediumDate'}}</td>
                         <td>
-                            <a class="btn btn-primary btn-sm mr-4" (click)="toUpdateMode(student)">Edit</a>
+                            <a class="btn btn-primary btn-sm mr-4" (click)="toUpdateMode(student)">
+                                <i class="fas fa-edit"></i> Edit</a>
                             <a class="btn btn-danger btn-sm" (click)="deleteStudent(student._id)">
                                 @if(loadingDelete && deleteId === student._id){
                                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                 }@else{
-                                Delete
+                                <i class="fas fa-trash"></i> Delete
                                 }
                             </a>
                         </td>
@@ -69,6 +70,7 @@
                     }
                 </tbody>
             </table>
+            </div>
             <div class="card-footer bg-white border-top-0">
                 <p class="text-center mb-0">
                     <strong>Class Teacher: </strong> <span class="text-muted">{{ classTeacher ? classTeacher : 'Not Assigned' }}</span>
@@ -96,7 +98,7 @@
                                 @if(loadingSearch){
                                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                 }@else{
-                                    Search
+                                    <i class="fas fa-search"></i> Search
                                 }
                             </button>
                         </div>
@@ -104,7 +106,8 @@
                     </div>
                 </form>
             </div>
-            <table class="table table-striped table-responsive">
+            <div class="table-responsive">
+            <table class="table table-striped">
                 <thead>
                     <tr>
                         <th>AN</th>
@@ -124,12 +127,13 @@
                         <td>{{student.classLevel}}</td>
                         <td>{{student.createdAt | date:'mediumDate'}}</td>
                         <td>
-                            <a class="btn btn-primary btn-sm mr-4" (click)="toUpdateMode(student)">Edit</a>
+                            <a class="btn btn-primary btn-sm mr-4" (click)="toUpdateMode(student)">
+                                <i class="fas fa-edit"></i> Edit</a>
                             <a class="btn btn-danger btn-sm" (click)="deleteStudent(student._id)">
                                 @if(loadingDelete){
                                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                 }@else{
-                                Delete
+                                <i class="fas fa-trash"></i> Delete
                                 }
                             </a>
                         </td>
@@ -137,6 +141,7 @@
                     }
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 
@@ -185,7 +190,7 @@
                     @if(loadingRegisterUpdate){
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     }@else{
-                        {{registerMode ? 'Register' : 'Update'}}
+                       <i class="fas fa-save"></i> {{registerMode ? 'Register' : 'Update'}}
                     }
                 </button>
             </div>
