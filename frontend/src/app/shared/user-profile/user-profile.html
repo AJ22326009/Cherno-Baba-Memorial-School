@@ -9,24 +9,24 @@
 
             <ul class="list-group list-group-unbordered mb-3">
                 <li class="list-group-item">
-                    <b>ID</b> <a class="float-right">{{user.userId}}</a>
+                    <b><i class="fas fa-id-badge"></i> ID</b> <a class="float-right">{{user.userId}}</a>
                 </li>
                 <li class="list-group-item">
-                    <b>role</b> <a class="float-right">{{user.role}}</a>
+                    <b><i class="fas fa-user-tag"></i> Role</b> <a class="float-right">{{user.role}}</a>
                 </li>
                 <li class="list-group-item">
-                    <b>Email</b> <a class="float-right">{{user.email}}</a>
+                    <b><i class="fas fa-envelope"></i> Email</b> <a class="float-right">{{user.email}}</a>
                 </li>
                 @if(user.role === 'teacher'){
                 <li class="list-group-item">
-                    <b>Assigned Class</b> <a class="float-right">{{user.assignedClass}}</a>
+                    <b><i class="fas fa-chalkboard"></i> Assigned Class</b> <a class="float-right">{{user.assignedClass}}</a>
                 </li>
                 }
             </ul>
             <!--    to be used later-->
             @if(!changePasswordMode){
             <div class="flex row m-2" style="justify-content: center;">
-                <a class="btn btn-primary m-2" (click)="changePasswordMode=true" style="font-weight: bold;">Change password</a>
+                <a class="btn btn-primary m-2" (click)="changePasswordMode=true" style="font-weight: bold;"><i class="fas fa-key"></i> Change password</a>
             </div>
             }
             @if(changePasswordMode){
@@ -52,7 +52,11 @@
                     cancel
                 </button>
                 <button type="submit" class="btn btn-primary"[disabled]="passwordForm.invalid">
-                    {{loading ? 'Updating...' : 'Update'}}
+                    @if(loading){
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    }@else{
+                        <i class="fas fa-save"></i> Update
+                    }
                 </button>
             </div>
             </form>
