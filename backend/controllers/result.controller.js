@@ -1,5 +1,4 @@
 const Result=require('../models/Result.model');
-const Subject=require('../models/Subject.model');
 const Student=require('../models/Student.model');
 
 //create a result
@@ -19,14 +18,6 @@ const createResult=async(req,res)=>{
         const existingResult=await Result.findOne({student:student._id, term});
         if(existingResult){
             return res.status(400).json({message: "This result already exists"});
-        }
-
-        for(const score of scores){
-            const subject=await Subject.findOne({name: score.subject});
-            if(!subject){
-                return res.status(400).json({message: `Subject with ID ${score.subject} not found`});
-            }
-            score.subject=subject._id;
         }
 
         const total=scores.reduce((acc, curr)=> acc + curr.score, 0);
@@ -69,49 +60,121 @@ const generateClassPositions=async(req,res)=>{
     }
 };
 
-//get all the results of a particular student
-const getResultsByStudent=async(req,res)=>{
-    try {
-        const studentId=req.params.studentId;
-        const results=await Result.find({student:studentId});
-
-        const student=await Student.findById(studentId);
-        if(req.user.role==='teacher' && req.user.assignedClass !== student.classLevel){
-            return res.status(403).json({ message: 'forbidden access: You can only view results of students from your assigned class' });
-        }
-
-        res.status(200).json(results);
-    } catch (error) {
-        res.status(500).json({message: "Error fetching results", error: error.message});
-    }
-}
-
-//get all the results of a particular class and term
-const getResultsByClassTerm=async(req,res)=>{
-    try {
-        const {classLevel, term}=req.body;
+//get results in a class
+const getResultsByClass=async(req,res)=>{
+    try{
+        const classLevel=req.params.classLevel;
 
         if(req.user.role==='teacher' && req.user.assignedClass !== classLevel){
             return res.status(403).json({ message: 'forbidden access: You can only view results of your assigned class' });
         }
 
-        const results=await Result.find({term}).populate({path: 'student', match: {classLevel}});
-        const filteredResults=results.filter(result=> result.student !== null);
+        const {term, studentName}=req.query;
+
+        if(!term || !studentName){
+            return res.status(400).json({message: "Please provide both term and studentName"});
+        }
+
+        let resultsArray=[];
+        let filteredResultsArray=[];
+
+        if(term !== 'all' && studentName !== 'all'){
+           resultsArray=await Result.find({term}).populate({path: 'student', match: {fullName: studentName, classLevel}});
+           filteredResultsArray=resultsArray.filter(result=> result.student !== null);
+        }else if(term !== 'all' && studentName=== 'all'){
+            resultsArray=await Result.find({term}).populate({path: 'student', match: {classLevel}});
+            filteredResultsArray=resultsArray.filter(result=> result.student !== null);
+        }else if(term === 'all' && studentName !== 'all'){
+            resultsArray=await Result.find().populate({path: 'student', match: {fullName: studentName, classLevel}});
+            filteredResultsArray=resultsArray.filter(result=> result.student !== null);
+        }else if(term === 'all' && studentName === 'all'){
+            resultsArray=await Result.find().populate({path: 'student', match: {classLevel}});
+            filteredResultsArray=resultsArray.filter(result=> result.student !== null);
+        }
+
+        res.status(200).json(filteredResultsArray);
+    }catch(error){
+        res.status(500).json({message: "Error fetching results", error: error.message});
+    }
+}
+
+//delete a result
+const deleteResult=async(req,res)=>{
+    try {
+        const id=req.params.id;
+        const result=await Result.findById(id);
+        if(!result){
+            return res.status(404).json({message: "Result not found"});
+        }
+
+        await result.populate('student');
+        if(req.user.role==='teacher' && req.user.assignedClass !== result.student.classLevel){
+            return res.status(403).json({ message: 'forbidden access: You can only delete results of your assigned class' });
+        }
+
+        await Result.findOneAndDelete(result)
+        res.status(200).json({message: "Result deleted successfully"});
+    } catch (error) {
+        res.status(500).json({message: "Error deleting result", error: error.message});
+    }
+}
+
+//edit a result
+const editResult=async(req,res)=>{
+    try {
+        const id=req.params.id;
+        const updatedData=req.body;
+        const result=await Result.findById(id);
+        if(!result){
+            return res.status(404).json({message: "Result not found"});
+        }
+
+        await result.populate('student');
+        if(req.user.role==='teacher' && req.user.assignedClass !== result.student.classLevel){
+            return res.status(403).json({ message: 'forbidden access: You can only edit results of your assigned class' });
+        }
+
+        const updatedResult = await Result.findOneAndUpdate(result, updatedData, {new: true});
+        updatedResult.total = updatedResult.scores.reduce((acc, curr) => acc + curr.score, 0);
+        await updatedResult.save();
+        res.status(200).json({message: "Result updated successfully"});
+    } catch (error) {
+        res.status(500).json({message: "Error updating result", error: error.message});
+    }
+}
+
+//search for results by name, term (all terms included) and class level (all classes included)
+// only admin can do this
+const searchResults=async(req,res)=>{
+    try {
+        const name=req.params.name.trim();
+        const {term, classLevel}=req.query;
+
+        const results=await Result.find().populate('student');
+        let filteredResults=results;
+
+        filteredResults=filteredResults.filter(result=> result.student.fullName.toLowerCase().includes(name.toLowerCase()));
+
+        if(!term){
+            res.status(400).json({message: "Please provide term in query"});
+            return;
+        }
+        if(term !== 'all'){
+            filteredResults=filteredResults.filter(result=> result.term === term);
+        }
+        if(!classLevel){
+            res.status(400).json({message: "Please provide classLevel in query"});
+            return;
+        }
+
+        if(classLevel !== 'all'){
+            filteredResults=filteredResults.filter(result=> result.student.classLevel === classLevel);
+        }
         res.status(200).json(filteredResults);
     } catch (error) {
-        res.status(500).json({message: "Error fetching results", error: error.message});
-    }
-}
-
-//get all results [only admin]
-const getAllResults=async(req,res)=>{
-    try {
-        const results=await Result.find().populate('student');
-        res.status(200).json(results);
-    } catch (error) {
-        res.status(500).json({message: "Error fetching results", error: error.message});
+        res.status(500).json({message: "Error searching results", error: error.message});
     }
 }
 
 
-module.exports={createResult, generateClassPositions, getResultsByStudent, getResultsByClassTerm, getAllResults};
+module.exports={createResult, generateClassPositions, getResultsByClass, deleteResult, editResult, searchResults};
