@@ -1,25 +1,30 @@
 <div class="container mt-4">
-    <div class="small-box bg d-flex justify-content-around align-items-center">
-        <a class="btn btn-primary m-2">Enter Student Results</a> <a class="btn btn-primary m-2">Update Student Results</a>
-    </div>
-
     <div class="small-box">
         <div class="card-body">
-            <form>
+            <form [formGroup]="positionGenerationForm" (ngSubmit)="generatePositions()">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <select class="form-control" id="term" name="term" required>
+                            <select class="form-control" formControlName="term" required>
                                 <option value="">Select Term</option>
-                                <option value="1">Term 1</option>
-                                <option value="2">Term 2</option>
-                                <option value="3">Term 3</option>
+                                <option value="Term 1">Term 1</option>
+                                <option value="Term 2">Term 2</option>
+                                <option value="Term 3">Term 3</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <button type="submit" class="btn btn-primary">Generate Positions for term</button>
+                        <button type="submit" class="btn btn-primary" [disabled]="positionGenerationForm.invalid">
+                            @if(loadingPositions){
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            } @else {
+                            <i class="fas fa-trophy"></i> Generate Positions
+                            }
+                        </button>
+                        @if(shouldGeneratePosition){
+                            <i class="fas fa-warning text-danger"></i>
+                            <small class="text-danger">Please generate positions</small>}
                     </div>
 
                 </div>
@@ -27,30 +32,38 @@
         </div>
     </div>
 
-    <div class="card card-primary">
+    <div class="bg d-flex justify-content-around align-items-center">
+        <a class="btn btn-primary m-2" (click)="toEnterMode()"><i class="fas fa-edit"></i> Enter Student Results</a>
+    </div>
+
+    @if(resultEnterMode || resultUpdateMode){
+    <div class="card card-primary" id="enterUpdate">
         <div class="card-header">
-            <h3 class="card-title">Enter Student Results</h3>
+            <h3 class="card-title">{{ resultEnterMode ? 'Enter Student Results' : 'Update Student Results' }}</h3>
         </div>
 
-        <form>
+        <form (ngSubmit)="resultEnterMode ? saveResults() : updateResults()" [formGroup]="resultsForm">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="studentSelect">Select Student</label>
-                            <select class="form-control" id="studentSelect" required>
+                            <select class="form-control" id="studentSelect" formControlName="studentName">
                                 <option value="">-- Select Student --</option>
-                                <option value="1">Algasim Jallow</option>
+                                @for(student of students; track student.admissionNumber){
+                                <option [value]="student.fullName">{{student.fullName}}</option>
+                                }
                             </select>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="termSelect">Term</label>
-                            <select class="form-control" id="termSelect" required>
-                                <option value="1">Term 1</option>
-                                <option value="2">Term 2</option>
-                                <option value="3">Term 3</option>
+                            <select class="form-control" id="termSelect" formControlName="term">
+                                <option value="">-- Select Term --</option>
+                                <option value="Term 1">Term 1</option>
+                                <option value="Term 2">Term 2</option>
+                                <option value="Term 3">Term 3</option>
                             </select>
                         </div>
                     </div>
@@ -63,92 +76,109 @@
                     <div class="col-md-6">
                         <div class="form-group d-flex align-items-center justify-content-between border-bottom pb-2">
                             <label class="mb-0">English</label>
-                            <input type="number" class="form-control w-25" min="0" max="100" placeholder="0">
+                            <input type="number" class="form-control w-25" placeholder="0" formControlName="English">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group d-flex align-items-center justify-content-between border-bottom pb-2">
                             <label class="mb-0">Maths</label>
-                            <input type="number" class="form-control w-25" min="0" max="100" placeholder="0">
+                            <input type="number" class="form-control w-25" placeholder="0" formControlName="Maths">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group d-flex align-items-center justify-content-between border-bottom pb-2">
                             <label class="mb-0">Phonics</label>
-                            <input type="number" class="form-control w-25" min="0" max="100" placeholder="0">
+                            <input type="number" class="form-control w-25" placeholder="0" formControlName="Phonics">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group d-flex align-items-center justify-content-between border-bottom pb-2">
                             <label class="mb-0">Verbal</label>
-                            <input type="number" class="form-control w-25" min="0" max="100" placeholder="0">
+                            <input type="number" class="form-control w-25" placeholder="0" formControlName="Verbal">
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="card-footer">
-                <button type="submit" class="btn btn-success float-right">
-                    <i class="fas fa-save"></i> Save Results
+                <button type="button" (click)="cancel()" class="btn btn-secondary float-left">
+                   <i class="fas fa-times"></i> cancel
+                </button>
+                <button type="submit" class="btn btn-success float-right" [disabled]="resultsForm.invalid">
+                    @if(loadingEnterUpdate){
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    }@else {
+                        <i class="fas fa-save"></i>{{ resultEnterMode ? ' Save' : ' Update' }}
+                    }
                 </button>
             </div>
         </form>
     </div>
+    }
     <!-- should be in results component -->
-    <div style="margin-bottom: 40px;">
+    <div class="mb-4 mt-4" id="searchResults">
         <h3>Results Search</h3>
-        <em>AN 0 means all students in Grade #</em>
         <div class="card">
             <div class="card-body">
-                <form>
+                <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
                     <div class="row">
                         <div class="col-md-5">
                             <div class="form-group">
-                                <select class="form-control" id="student" name="student" required>
+                                <select class="form-control" formControlName="studentName">
                                     <option value="">Select student</option>
-                                    <option value="0" class="text-bold">All students</option>
-                                    <option value="1">Algasim Jallow</option>
-                                    <option value="2">Mustapha Darboe</option>
-                                    <option value="3">Ousainou Jawo</option>
+                                    <option value="all" class="text-bold">All students</option>
+                                     @for(student of students; track student.admissionNumber){
+                                    <option [value]="student.fullName">{{student.fullName}}</option>
+                                     }
                                 </select>
                             </div>
                         </div>
 
                         <div class="col-md-5">
                             <div class="form-group">
-                                <select class="form-control" id="term" name="term" required>
+                                <select class="form-control" formControlName="term">
                                     <option value="">Select Term</option>
-                                    <option value="1">Term 1</option>
-                                    <option value="2">Term 2</option>
-                                    <option value="3">Term 3</option>
-                                    <option value="0">All Terms</option>
+                                    <option value="Term 1">Term 1</option>
+                                    <option value="Term 2">Term 2</option>
+                                    <option value="Term 3">Term 3</option>
+                                    <option value="all">All Terms</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary">Search</button>
+                            <button type="submit" class="btn btn-primary" [disabled]="searchForm.invalid">
+                                @if(loadingResults){
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                }@else {
+                                <i class="fas fa-search"></i> Search
+                                }
+                            </button>
                         </div>
                     </div>
                 </form>
 
                 <div class="d-flex flex-column gap-2">
-                    <div class="card shadow table-responsive">
-                        <div class="card-body">
+                    @if(noResults){
+                    <p class="text-center mt-3 text-danger">No results found.</p>
+                    }
+                    @for(result of results; track result._id){
+                    <div class="card table-responsive border border-info">
+                        <div class="card-body" [id]="result._id">
                             <div class="border-0">
                                 <div style="min-width: 600px;">
                                     <div class="row mb-3">
                                         <div class="col-4">
-                                            <p class="mb-1"><strong>Name:</strong> Algasim Jallow</p>
-                                            <p class="mb-0"><strong>Class:</strong> Grade 6</p>
+                                            <p class="mb-1"><strong>Name:</strong> {{result.student.fullName}}</p>
+                                            <p class="mb-0"><strong>Class:</strong> {{class}}</p>
                                         </div>
                                         <div class="col-4 text-center">
-                                            <p class="mb-1"><strong>Gender:</strong> Male</p>
-                                            <p class="mb-0"><strong># in class:</strong> 13</p>
+                                            <p class="mb-1"><strong>Gender:</strong> {{result.student.gender}}</p>
+                                            <p class="mb-0"><strong># in class:</strong> {{students.length}}</p>
                                         </div>
                                         <div class="col-4 text-right">
-                                            <p class="mb-1"><strong>Term:</strong> 1</p>
-                                            <p class="mb-0"><strong>Teacher:</strong> Mr. Secka</p>
+                                            <p class="mb-1"><strong>{{result.term}}</strong></p>
+                                            <p class="mb-0"><strong>Teacher:</strong> {{teacher}}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -165,145 +195,65 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @for(sub of result.scores; track sub.subject){
                                         <tr>
-                                            <td>English</td>
-                                            <td>80</td>
+                                            <td>{{sub.subject}}</td>
+                                            <td>{{sub.score}}</td>
                                         </tr>
-                                        <tr>
-                                            <td>Maths</td>
-                                            <td>80</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Phonics</td>
-                                            <td>80</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Verbal</td>
-                                            <td>80</td>
-                                        </tr>
+                                        }
                                     </tbody>
                                     <tfoot>
                                         <tr class="bg-light">
                                             <th class="text-right">Total:</th>
-                                            <td class="text-bold">320</td>
+                                            <td class="text-bold">{{result.total}}</td>
                                         </tr>
                                         <tr class="bg-light">
                                             <th class="text-right">Position:</th>
-                                            <td class="text-bold text-primary">4th</td>
+                                            <td class="text-bold text-primary">{{result.position}}</td>
                                         </tr>
                                     </tfoot>
                                 </table>
                             </div>
                         </div>
 
-                        <div class="card-footer bg-white border-top-0">
-                            <div class="d-flex justify-content-around align-items-center pt-3">
-
-                                <div class="text-center">
-                                    <p class="mb-0 border-top d-inline-block px-5">
-                                        <em>Mr. Ousainou Secka</em>
-                                    </p>
-                                </div>
-
-                                <div class="text-center">
-                                    <p class="mb-0 border-top d-inline-block px-5">
-                                        <em>Admin</em>
-                                    </p>
-                                </div>
-
-                            </div>
-                        </div>
-                        <button class="btn btn-primary mb-3"
-                            style="width: 20%; min-width: 100px; margin: 0 auto">Print</button>
+                        <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
+                            <button type="button" class="btn btn-danger" (click)="deleteResult(result._id)">
+                                @if(loadingDelete && deleteResultId === result._id){
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                } @else {
+                                <i class="fas fa-trash" ></i> delete
+                                }
+                            </button>
+                            <button type="button" class="btn btn-primary"(click)="toUpdateMode(result)">
+                                <i class="fas fa-edit" ></i> edit
+                            </button>
+                            <button type="button" class="btn btn-primary" ngxPrint [printSectionId]="result._id" [useExistingCss]="true">
+                                <i class="fas fa-print"></i> Print
+                            </button>
+                        </div> 
                     </div>
-                    <div class="card shadow table-responsive">
-                        <div class="card-body">
-                            <div class="border-0">
-                                <div style="min-width: 600px;">
-                                    <div class="row mb-3">
-                                        <div class="col-4">
-                                            <p class="mb-1"><strong>Name:</strong> Algasim Jallow</p>
-                                            <p class="mb-0"><strong>Class:</strong> Grade 6</p>
-                                        </div>
-                                        <div class="col-4 text-center">
-                                            <p class="mb-1"><strong>Gender:</strong> Male</p>
-                                            <p class="mb-0"><strong># in class:</strong> 13</p>
-                                        </div>
-                                        <div class="col-4 text-right">
-                                            <p class="mb-1"><strong>Term:</strong> 1</p>
-                                            <p class="mb-0"><strong>Teacher:</strong> Mr. Secka</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr>
-
-                            <div>
-                                <table class="table table-bordered text-nowrap" style="min-width: 600px;">
-                                    <thead class="bg-light">
-                                        <tr>
-                                            <th style="width: 70%;">Subject</th>
-                                            <th style="width: 30%;">Score</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>English</td>
-                                            <td>80</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Maths</td>
-                                            <td>80</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Phonics</td>
-                                            <td>80</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Verbal</td>
-                                            <td>80</td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr class="bg-light">
-                                            <th class="text-right">Total:</th>
-                                            <td class="text-bold">320</td>
-                                        </tr>
-                                        <tr class="bg-light">
-                                            <th class="text-right">Position:</th>
-                                            <td class="text-bold text-primary">4th</td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="card-footer bg-white border-top-0">
-                            <div class="d-flex justify-content-around align-items-center pt-3">
-
-                                <div class="text-center">
-                                    <p class="mb-0 border-top d-inline-block px-5">
-                                        <em>Mr. Ousainou Secka</em>
-                                    </p>
-                                </div>
-
-                                <div class="text-center">
-                                    <p class="mb-0 border-top d-inline-block px-5">
-                                        <em>Admin</em>
-                                    </p>
-                                </div>
-
-                            </div>
-                        </div>
-                        <button class="btn btn-primary mb-3"
-                            style="width: 20%; min-width: 100px; margin: 0 auto">Print</button>
-                    </div>
+                }
                 </div>
-
+                @if(results.length > 0){
+                <button type="button" class="btn btn-secondary mt-3" (click)="clearSearch()">
+                    <i class="fas fa-times"></i> clear search
+                </button>
+                }
             </div>
         </div>
 
 
     </div>
+
+     @if(error){
+    <div class="alert alert-danger" role="alert" style="position: fixed; bottom: 20px; right: 20px;">
+        {{ error }}
+    </div>
+    }
+
+    @if(success){
+    <div class="alert alert-success" role="alert" style="position: fixed; bottom: 20px; right: 20px;">
+        {{ success }}
+    </div>
+    }
 </div>
