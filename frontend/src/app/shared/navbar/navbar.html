@@ -13,25 +13,25 @@
         <!-- Left navbar links -->
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a [routerLink]="homeLink" class="nav-link">Home</a>
+            <a [routerLink]="homeLink" class="nav-link"><i class="fas fa-home"></i> Home</a>
           </li>
           @if(role === 'admin'){
           <li class="nav-item">
-            <a [routerLink]="usersLink" class="nav-link">Users</a>
+            <a [routerLink]="usersLink" class="nav-link"><i class="fas fa-users"></i> Users</a>
           </li>
           }
           @if(role === 'admin'){
           <li class="nav-item">
-            <a [routerLink]="studentsLink" class="nav-link">Students</a>
+            <a [routerLink]="studentsLink" class="nav-link"><i class="fas fa-user-graduate"></i> Students</a>
           </li>
           }
           @if(role === 'teacher'){
           <li class="nav-item">
-            <a [routerLink]="resultsLink" class="nav-link">Results</a>
+            <a [routerLink]="resultsLink" class="nav-link"><i class="fas fa-chart-bar"></i> Results</a>
           </li>
           }
           <li class="nav-item">
-            <span (click)="logout()" class="nav-link" style="cursor: pointer; color: brown;">logout</span>
+            <span (click)="logout()" class="nav-link" style="cursor: pointer; color: brown;"><i class="fas fa-sign-out-alt"></i> Logout</span>
           </li>
         </ul>
 
