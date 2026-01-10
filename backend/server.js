@@ -9,7 +9,6 @@ const authRoutes = require('./routes/auth.routes');
 const studentRoutes = require('./routes/student.route');
 const resultRoutes = require('./routes/result.route');
 const userRoutes = require('./routes/user.route');
-const subjectRoutes = require('./routes/subject.route');
 
 const authenticate = require('./middleware/authenticate.middleware');
 
@@ -29,7 +28,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/students',authenticate, studentRoutes);
 app.use('/api/results', authenticate, resultRoutes);
 app.use('/api/users', authenticate, userRoutes);
-app.use('/api/subjects', authenticate, subjectRoutes);
 
 const PORT = process.env.PORT || 5000;
 
