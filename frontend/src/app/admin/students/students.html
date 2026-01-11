@@ -158,6 +158,11 @@
                     <input type="text" class="form-control" id="fullname"
                         placeholder="Enter full name" formControlName="fullName">
                 </div>
+                @if(registerUpdateForm.get('fullName')?.invalid && registerUpdateForm.get('fullName')?.touched){
+                    <div class="text-danger mb-3">
+                        Full Name is required.
+                    </div>
+                }
 
                 <div class="form-group">
                     <label for="class">Class</label>
@@ -171,6 +176,11 @@
                         <option value="Grade 6">Grade 6</option>
                     </select>
                 </div>
+                @if(registerUpdateForm.get('classLevel')?.invalid && registerUpdateForm.get('classLevel')?.touched){
+                    <div class="text-danger mb-3">
+                        Class is required.
+                    </div>
+                }
 
                 <div class="form-group">
                     <label for="gender">Gender</label>
@@ -180,11 +190,16 @@
                         <option value="female">Female</option>
                     </select>
                 </div>
+                @if(registerUpdateForm.get('gender')?.invalid && registerUpdateForm.get('gender')?.touched){
+                    <div class="text-danger mb-3">
+                        Gender is required.
+                    </div>
+                }
             </div>
             <!-- /.card-body -->
             <div class="card-footer d-flex justify-content-center">
                 <button type="button" class="btn btn-secondary mr-3" (click)="cancel()">
-                    cancel
+                  <i class="fas fa-times"></i>  cancel
                 </button>
                 <button type="submit" class="btn btn-primary" [disabled]="registerUpdateForm.invalid || loadingRegisterUpdate">
                     @if(loadingRegisterUpdate){
