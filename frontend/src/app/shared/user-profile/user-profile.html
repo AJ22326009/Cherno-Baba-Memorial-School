@@ -36,20 +36,42 @@
                         <input type="password" class="form-control" formControlName="currentPassword"
                             id="currentPassword" placeholder="Current Password">
                     </div>
+                    @if(passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched){
+                        <div class="text-danger mb-3">
+                            Current Password is required.
+                        </div>
+                    }
 
                     <div class="form-group">
                         <input type="password" class="form-control" formControlName="newPassword" id="newPassword"
                             placeholder="New Password">
                     </div>
+                    @if(passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched){
+                        @if(passwordForm.get('newPassword')?.errors?.['required']){
+                            <div class="text-danger mb-3">
+                                New Password is required.
+                            </div>
+                        }
+                         @if(passwordForm.get('newPassword')?.errors?.['minlength']){
+                            <div class="text-danger mb-3">
+                                New Password must be at least 6 characters long.
+                            </div>
+                        }
+                    }
 
                     <div class="form-group">
                         <input type="password" class="form-control" formControlName="confirmNewPassword" id="confirmNewPassword"
                             placeholder="Confirm New Password">
                     </div>
+                    @if(passwordForm.get('confirmNewPassword')?.invalid && passwordForm.get('confirmNewPassword')?.touched){
+                        <div class="text-danger mb-3">
+                            Confirm New Password is required.
+                        </div>
+                    }
                 </div>
                  <div class="card-footer d-flex justify-content-center">
                      <button type="button" (click)="changePasswordMode=false"  class="btn btn-secondary mr-2">
-                    cancel
+                        <i class="fas fa-times"></i> Cancel
                 </button>
                 <button type="submit" class="btn btn-primary"[disabled]="passwordForm.invalid">
                     @if(loading){
