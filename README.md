@@ -22,7 +22,7 @@ It aims to ease the responsibilities of teachers and admins in Cherno Baba Schoo
 - Search for results by student, term and/ or class.
 - Dashboard overview
 
-![Admin dashboard](./screenshots/Macbook-Air-localhost.png "laptop view")
+![Admin dashboard](./screenshots/Macbook-Air-localhost.png)
 
 ### Teacher Features
 - Manage class results
