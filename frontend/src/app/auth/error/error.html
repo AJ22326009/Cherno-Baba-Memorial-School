@@ -1,11 +1,5 @@
 <div class="error-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-  @if(errorMessage==='Server Error'){
-     <i class="fas fa-exclamation-triangle fa-3x" style="color: orange;"></i>
-    <h1>{{ errorMessage }}</h1>
-    <p>There is a server error. Please try again later.</p>
-    <a (click)="goToLogin()" class="btn btn-primary">Back to Login</a>
-  }
-  @else if(errorMessage==='Server Down'){
+  @if(errorMessage==='Server Down'){
     <i class="fas fa-server fa-3x" style="color: orange;"></i>
     <h1>{{ errorMessage }}</h1>
     <p>The server is currently down or network error. Please try again later.</p>
