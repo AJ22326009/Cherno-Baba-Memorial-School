@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,15 @@ export class Login {
   loading: boolean = false;
   errorMessage: string| null = null;
 
-  constructor(private authService: AuthService, private fb: FormBuilder) {
+  constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) {
+    if(this.authService.isLoggedIn()){
+      const user = this.authService.getUser();
+      if(user?.role==='admin'){
+        this.router.navigate(['/admin']);
+      }else if(user?.role==='teacher'){
+        this.router.navigate(['/teacher']);
+      }
+    }
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
