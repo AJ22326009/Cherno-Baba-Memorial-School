@@ -21,7 +21,7 @@ export class UserProfile {
     this.user = this.authService.getUser();
     this.passwordForm = this.fb.group({
       currentPassword: ['', Validators.required],
-      newPassword: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(6)]],
       confirmNewPassword: ['', Validators.required]
     });
   }
