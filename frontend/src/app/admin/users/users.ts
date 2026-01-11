@@ -128,7 +128,7 @@ export class Users implements OnInit {
 
   toRegisterMode(){
     this.registerMode=true;
-    this.userForm.addControl('password', this.fb.control('', Validators.required));
+    this.userForm.addControl('password', this.fb.control('', [Validators.required, Validators.minLength(6)]));
     this.userForm.reset();
   }
 
