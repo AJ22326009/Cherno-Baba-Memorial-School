@@ -47,8 +47,13 @@
 
                 <div class="row">
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary btn-block"
-                            [disabled]="loginForm.invalid || loading">{{ loading ? 'loading...' : 'Log In' }}</button>
+                        <button type="submit" class="btn btn-primary btn-block" [disabled]="loginForm.invalid || loading">
+                            @if(loading){
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                            }@else{
+                                <i class="fas fa-sign-in-alt"></i> Log In
+                            }
+                        </button>
                     </div>
                 </div>
             </form>
